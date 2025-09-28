@@ -1,0 +1,140 @@
+name: Dependency Updates
+
+on:
+  schedule:
+    # Run every Monday at 9:00 AM UTC
+    - cron: '0 9 * * 1'
+  workflow_dispatch:
+
+jobs:
+  update-dependencies:
+    name: Update Dependencies
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential cmake
+
+    - name: Test current dependencies
+      run: |
+        cmake -B build \
+          -DCMAKE_BUILD_TYPE=Release \
+          -DNEKO_BUILD_TESTS=ON \
+          -DNEKO_AUTO_FETCH_DEPS=ON
+        cmake --build build --parallel
+        cd build && ctest --output-on-failure
+
+    - name: Check for GoogleTest updates
+      id: check-gtest
+      run: |
+        # Get latest GoogleTest release
+        LATEST_GTEST=$(curl -s https://api.github.com/repos/google/googletest/releases/latest | grep -oP '"tag_name": "\K(.*)(?=")')
+        echo "Latest GoogleTest version: $LATEST_GTEST"
+        echo "::set-output name=version::$LATEST_GTEST"
+
+    - name: Update GoogleTest version
+      run: |
+        # Update GoogleTest version in CMakeLists.txt if newer version is available
+        CURRENT_VERSION=$(grep -oP 'GIT_TAG\s+\K[^\s]+' CMakeLists.txt | grep -E 'release-[0-9]+\.[0-9]+\.[0-9]+' | head -1)
+        NEW_VERSION="${{ steps.check-gtest.outputs.version }}"
+        
+        if [ "$CURRENT_VERSION" != "$NEW_VERSION" ] && [ ! -z "$NEW_VERSION" ]; then
+          echo "Updating GoogleTest from $CURRENT_VERSION to $NEW_VERSION"
+          sed -i "s/GIT_TAG        $CURRENT_VERSION/GIT_TAG        $NEW_VERSION/" CMakeLists.txt
+          echo "UPDATED=true" >> $GITHUB_ENV
+        else
+          echo "GoogleTest is already up to date"
+          echo "UPDATED=false" >> $GITHUB_ENV
+        fi
+
+    - name: Test with updated dependencies
+      if: env.UPDATED == 'true'
+      run: |
+        # Clean and rebuild with updated dependencies
+        rm -rf build
+        cmake -B build \
+          -DCMAKE_BUILD_TYPE=Release \
+          -DNEKO_BUILD_TESTS=ON \
+          -DNEKO_AUTO_FETCH_DEPS=ON
+        cmake --build build --parallel
+        cd build && ctest --output-on-failure
+
+    - name: Create Pull Request
+      if: env.UPDATED == 'true'
+      uses: peter-evans/create-pull-request@v5
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        commit-message: "chore: update dependencies"
+        title: "chore: update dependencies"
+        body: |
+          This PR updates project dependencies to their latest versions.
+          
+          Changes:
+          - Updated GoogleTest to ${{ steps.check-gtest.outputs.version }}
+          
+          All tests have been verified to pass with the updated dependencies.
+        branch: chore/update-dependencies
+        delete-branch: true
+
+  security-audit:
+    name: Security Audit
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential cmake clang-tools
+
+    - name: Run security checks
+      run: |
+        # Configure with security flags
+        cmake -B build \
+          -DCMAKE_BUILD_TYPE=Debug \
+          -DCMAKE_C_COMPILER=clang \
+          -DCMAKE_CXX_COMPILER=clang++ \
+          -DCMAKE_CXX_FLAGS="-Wall -Wextra -Werror -Wno-unused-parameter -fsanitize=address,undefined -fno-omit-frame-pointer" \
+          -DCMAKE_C_FLAGS="-Wall -Wextra -Werror -Wno-unused-parameter -fsanitize=address,undefined -fno-omit-frame-pointer" \
+          -DNEKO_BUILD_TESTS=ON \
+          -DNEKO_AUTO_FETCH_DEPS=ON
+
+    - name: Build with security flags
+      run: cmake --build build --parallel
+
+    - name: Run tests with security checks
+      working-directory: build
+      run: |
+        export ASAN_OPTIONS=detect_leaks=1:abort_on_error=1
+        export UBSAN_OPTIONS=abort_on_error=1
+        ctest --output-on-failure --verbose
+
+    - name: Check for common vulnerabilities
+      run: |
+        # Check for common security issues in C++ code
+        echo "Checking for potential security issues..."
+        
+        # Check for dangerous functions
+        echo "Checking for dangerous functions..."
+        if grep -r "strcpy\|strcat\|sprintf\|gets" src/ include/ 2>/dev/null; then
+          echo "Warning: Found potentially dangerous functions"
+        else
+          echo "No dangerous functions found"
+        fi
+        
+        # Check for buffer operations without bounds checking
+        echo "Checking for unbounded operations..."
+        if grep -r "memcpy\|memset\|memmove" src/ include/ 2>/dev/null | grep -v "std::" | head -5; then
+          echo "Note: Found memory operations - ensure bounds are checked"
+        fi
