@@ -82,6 +82,7 @@ if(NEKO_BUILD_TESTS)
     
     # System Test executable
     add_executable(system_tests tests/system_test.cpp)
+    target_include_directories(system_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
     target_link_libraries(system_tests 
         PRIVATE 
         NekoSystem
