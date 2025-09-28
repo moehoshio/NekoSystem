@@ -19,28 +19,8 @@ if(NEKO_AUTO_FETCH_DEPS)
         GIT_REPOSITORY https://github.com/moehoshio/NekoFunction.git
         GIT_TAG        main
     )
-    
-    # Get NekoFunction source without building its tests to avoid C++20 compatibility issues
-    FetchContent_GetProperties(NekoFunction)
-    if(NOT nekofunction_POPULATED)
-        FetchContent_Populate(NekoFunction)
-        
-        # Check if NekoFunction has tests that might cause issues
-        set(BUILD_TESTS_BACKUP ${BUILD_TESTS})
-        set(BUILD_TESTING_BACKUP ${BUILD_TESTING})
-        set(NEKO_BUILD_TESTS_BACKUP ${NEKO_BUILD_TESTS})
-        
-        set(BUILD_TESTS OFF CACHE BOOL "Disable NekoFunction tests" FORCE)
-        set(BUILD_TESTING OFF CACHE BOOL "Disable NekoFunction testing" FORCE)
-        set(NEKO_BUILD_TESTS OFF CACHE BOOL "Disable NekoFunction tests" FORCE)
-        
-        add_subdirectory(${nekofunction_SOURCE_DIR} ${nekofunction_BINARY_DIR})
-        
-        # Restore settings
-        set(BUILD_TESTS ${BUILD_TESTS_BACKUP} CACHE BOOL "" FORCE)
-        set(BUILD_TESTING ${BUILD_TESTING_BACKUP} CACHE BOOL "" FORCE)
-        set(NEKO_BUILD_TESTS ${NEKO_BUILD_TESTS_BACKUP} CACHE BOOL "" FORCE)
-    endif()
+
+    FetchContent_MakeAvailable(NekoFunction)
 endif()
 
 set(SRCFILES)
