@@ -104,6 +104,17 @@ jobs:
           sudo apt-get install -y clang
         fi
 
+    - name: Check compiler versions (Debug)
+      if: startsWith(matrix.config.os, 'ubuntu')
+      run: |
+        echo "=== Compiler Information ==="
+        ${{ matrix.config.cxx }} --version
+        echo "=== CMake Information ==="
+        cmake --version
+        echo "=== Standard Library Check ==="
+        echo '#include <version>' | ${{ matrix.config.cxx }} -std=c++20 -x c++ -E - 2>/dev/null && echo "C++20 headers available" || echo "C++20 headers missing"
+        echo '#include <source_location>' | ${{ matrix.config.cxx }} -std=c++20 -x c++ -E - 2>/dev/null && echo "source_location available" || echo "source_location missing"
+
     - name: Install dependencies (macOS)
       if: startsWith(matrix.config.os, 'macos')
       run: |
