@@ -1,13 +1,14 @@
 #include <neko/system/platform.hpp>
 
 #include <sys/utsname.h>
+#include <string>
 
 namespace neko::system {
-    std::string get_system_version() {
+    std::string getOsVersion() {
         struct utsname uts;
         if (uname(&uts) == 0) {
-            return uts.release;
+            return std::string(uts.release);
         }
-        return "";
+        return "unknown";
     }
 } // namespace neko::system

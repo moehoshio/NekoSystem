@@ -22,7 +22,7 @@ if(NEKO_AUTO_FETCH_DEPS)
     FetchContent_MakeAvailable(NekoFunction)
 endif()
 
-set(APPEND SRCFILES)
+set(SRCFILES)
 
 if(WIN32)
     list(APPEND SRCFILES

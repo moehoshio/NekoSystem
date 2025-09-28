@@ -15,6 +15,6 @@ namespace neko::system {
                      info.dwMajorVersion, info.dwMinorVersion, info.dwBuildNumber);
             return std::string(buf.data());
         }
-        return "";
+        return "unknown";
     }
 } // namespace neko::system
