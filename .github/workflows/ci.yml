@@ -91,7 +91,7 @@ jobs:
         submodules: recursive
 
     - name: Setup Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: '3.x'
 
@@ -120,7 +120,7 @@ jobs:
 
     - name: Set up MSVC environment (Windows)
       if: startsWith(matrix.config.os, 'windows') && matrix.config.cc == 'cl'
-      uses: ilammy/msvc-dev-cmd@v1
+      uses: ilammy/msvc-dev-cmd@v1.13.0
 
     - name: Configure CMake
       run: |
@@ -151,7 +151,7 @@ jobs:
 
     - name: Upload build artifacts (on failure)
       if: failure()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: build-logs-${{ matrix.config.name }}
         path: |

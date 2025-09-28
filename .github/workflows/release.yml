@@ -10,7 +10,7 @@ jobs:
     name: Create Release
     runs-on: ubuntu-latest
     outputs:
-      upload_url: ${{ steps.create_release.outputs.upload_url }}
+      release_id: ${{ steps.create_release.outputs.id }}
       
     steps:
     - name: Checkout
@@ -18,14 +18,19 @@ jobs:
 
     - name: Create Release
       id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      uses: actions/github-script@v7
       with:
-        tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
-        draft: false
-        prerelease: false
+        script: |
+          const { data: release } = await github.rest.repos.createRelease({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            tag_name: context.ref.replace('refs/tags/', ''),
+            name: `Release ${context.ref.replace('refs/tags/', '')}`,
+            draft: false,
+            prerelease: false
+          });
+          core.setOutput('id', release.id);
+          return release.id;
 
   build-release-assets:
     name: Build Release Assets
@@ -78,7 +83,7 @@ jobs:
 
     - name: Set up MSVC environment (Windows)
       if: startsWith(matrix.config.os, 'windows')
-      uses: ilammy/msvc-dev-cmd@v1
+      uses: ilammy/msvc-dev-cmd@v1.13.0
 
     - name: Configure CMake
       run: |
@@ -118,14 +123,19 @@ jobs:
         tar -czf ${{ matrix.config.artifact }} -C install .
 
     - name: Upload Release Asset
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      uses: actions/github-script@v7
       with:
-        upload_url: ${{ needs.create-release.outputs.upload_url }}
-        asset_path: ./${{ matrix.config.artifact }}
-        asset_name: ${{ matrix.config.artifact }}
-        asset_content_type: application/octet-stream
+        script: |
+          const fs = require('fs');
+          const path = './${{ matrix.config.artifact }}';
+          
+          await github.rest.repos.uploadReleaseAsset({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            release_id: ${{ needs.create-release.outputs.release_id }},
+            name: '${{ matrix.config.artifact }}',
+            data: fs.readFileSync(path)
+          });
 
   publish-docs:
     name: Publish Documentation
@@ -139,7 +149,7 @@ jobs:
         fetch-depth: 0
 
     - name: Setup Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: '3.x'
 
@@ -164,7 +174,7 @@ jobs:
         doxygen
 
     - name: Deploy to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v3
+      uses: peaceiris/actions-gh-pages@v4
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./docs/html
