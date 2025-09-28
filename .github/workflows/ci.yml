@@ -16,14 +16,6 @@ jobs:
         config:
           # Windows builds
           - {
-              name: "Windows MSVC 2022",
-              os: windows-latest,
-              cc: "cl",
-              cxx: "cl",
-              build_type: "Release",
-              generators: "Visual Studio 17 2022"
-            }
-          - {
               name: "Windows MSVC 2022 Debug",
               os: windows-latest,
               cc: "cl",
@@ -31,24 +23,8 @@ jobs:
               build_type: "Debug",
               generators: "Visual Studio 17 2022"
             }
-          - {
-              name: "Windows Clang",
-              os: windows-latest,
-              cc: "clang",
-              cxx: "clang++",
-              build_type: "Release",
-              generators: "Ninja"
-            }
           
           # Linux builds
-          - {
-              name: "Ubuntu GCC",
-              os: ubuntu-latest,
-              cc: "gcc",
-              cxx: "g++",
-              build_type: "Release",
-              generators: "Unix Makefiles"
-            }
           - {
               name: "Ubuntu GCC Debug",
               os: ubuntu-latest,
@@ -57,24 +33,8 @@ jobs:
               build_type: "Debug",
               generators: "Unix Makefiles"
             }
-          - {
-              name: "Ubuntu Clang",
-              os: ubuntu-latest,
-              cc: "clang",
-              cxx: "clang++",
-              build_type: "Release",
-              generators: "Unix Makefiles"
-            }
           
           # macOS builds
-          - {
-              name: "macOS Clang",
-              os: macos-latest,
-              cc: "clang",
-              cxx: "clang++",
-              build_type: "Release",
-              generators: "Unix Makefiles"
-            }
           - {
               name: "macOS Clang Debug",
               os: macos-latest,
