@@ -87,14 +87,7 @@ jobs:
 
     - name: Configure CMake
       run: |
-        cmake -B build \
-          -DCMAKE_BUILD_TYPE=Release \
-          -DCMAKE_C_COMPILER=${{ matrix.config.cc }} \
-          -DCMAKE_CXX_COMPILER=${{ matrix.config.cxx }} \
-          -G "${{ matrix.config.generators }}" \
-          -DNEKO_BUILD_TESTS=ON \
-          -DNEKO_AUTO_FETCH_DEPS=ON \
-          -DCMAKE_INSTALL_PREFIX=install
+        cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=${{ matrix.config.cc }} -DCMAKE_CXX_COMPILER=${{ matrix.config.cxx }} -G "${{ matrix.config.generators }}" -DNEKO_BUILD_TESTS=ON -DNEKO_AUTO_FETCH_DEPS=ON -DCMAKE_INSTALL_PREFIX=install
 
     - name: Build
       run: cmake --build build --config Release --parallel

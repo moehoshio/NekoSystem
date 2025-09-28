@@ -6,9 +6,11 @@
 - ✅ Updated `actions/upload-artifact@v3` → `@v4`
 - ✅ Updated `actions/setup-python@v4` → `@v5`
 - ✅ Updated `ilammy/msvc-dev-cmd@v1` → `@v1.13.0`
+- ✅ Fixed multi-line cmake commands for cross-platform compatibility
 
 ### Code Quality Workflow (`code-quality.yml`)
 - ✅ Updated `codecov/codecov-action@v3` → `@v4`
+- ✅ Fixed multi-line cmake commands for cross-platform compatibility
 
 ### Release Workflow (`release.yml`)
 - ✅ Replaced deprecated `actions/create-release@v1` with `actions/github-script@v7`
@@ -16,9 +18,12 @@
 - ✅ Updated `actions/setup-python@v4` → `@v5`
 - ✅ Updated `ilammy/msvc-dev-cmd@v1` → `@v1.13.0`
 - ✅ Updated `peaceiris/actions-gh-pages@v3` → `@v4`
+- ✅ Fixed multi-line cmake commands for cross-platform compatibility
 
 ### Dependencies Workflow (`dependencies.yml`)
 - ✅ Already using latest versions (`actions/checkout@v4`, `peter-evans/create-pull-request@v5`)
+- ✅ Fixed multi-line cmake commands for cross-platform compatibility
+- ✅ Improved test execution with proper working directories
 
 ## Changes Made
 

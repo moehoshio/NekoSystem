@@ -24,12 +24,12 @@ jobs:
 
     - name: Test current dependencies
       run: |
-        cmake -B build \
-          -DCMAKE_BUILD_TYPE=Release \
-          -DNEKO_BUILD_TESTS=ON \
-          -DNEKO_AUTO_FETCH_DEPS=ON
+        cmake -B build -DCMAKE_BUILD_TYPE=Release -DNEKO_BUILD_TESTS=ON -DNEKO_AUTO_FETCH_DEPS=ON
         cmake --build build --parallel
-        cd build && ctest --output-on-failure
+
+    - name: Run current tests
+      working-directory: build
+      run: ctest --output-on-failure
 
     - name: Check for GoogleTest updates
       id: check-gtest
@@ -59,12 +59,13 @@ jobs:
       run: |
         # Clean and rebuild with updated dependencies
         rm -rf build
-        cmake -B build \
-          -DCMAKE_BUILD_TYPE=Release \
-          -DNEKO_BUILD_TESTS=ON \
-          -DNEKO_AUTO_FETCH_DEPS=ON
+        cmake -B build -DCMAKE_BUILD_TYPE=Release -DNEKO_BUILD_TESTS=ON -DNEKO_AUTO_FETCH_DEPS=ON
         cmake --build build --parallel
-        cd build && ctest --output-on-failure
+
+    - name: Run updated tests
+      if: env.UPDATED == 'true'
+      working-directory: build
+      run: ctest --output-on-failure
 
     - name: Create Pull Request
       if: env.UPDATED == 'true'
@@ -101,14 +102,7 @@ jobs:
     - name: Run security checks
       run: |
         # Configure with security flags
-        cmake -B build \
-          -DCMAKE_BUILD_TYPE=Debug \
-          -DCMAKE_C_COMPILER=clang \
-          -DCMAKE_CXX_COMPILER=clang++ \
-          -DCMAKE_CXX_FLAGS="-Wall -Wextra -Werror -Wno-unused-parameter -fsanitize=address,undefined -fno-omit-frame-pointer" \
-          -DCMAKE_C_FLAGS="-Wall -Wextra -Werror -Wno-unused-parameter -fsanitize=address,undefined -fno-omit-frame-pointer" \
-          -DNEKO_BUILD_TESTS=ON \
-          -DNEKO_AUTO_FETCH_DEPS=ON
+        cmake -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_CXX_FLAGS="-Wall -Wextra -Werror -Wno-unused-parameter -fsanitize=address,undefined -fno-omit-frame-pointer" -DCMAKE_C_FLAGS="-Wall -Wextra -Werror -Wno-unused-parameter -fsanitize=address,undefined -fno-omit-frame-pointer" -DNEKO_BUILD_TESTS=ON -DNEKO_AUTO_FETCH_DEPS=ON
 
     - name: Build with security flags
       run: cmake --build build --parallel

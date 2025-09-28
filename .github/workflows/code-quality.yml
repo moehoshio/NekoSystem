@@ -28,13 +28,7 @@ jobs:
 
     - name: Setup CMake for analysis
       run: |
-        cmake -B build \
-          -DCMAKE_BUILD_TYPE=Debug \
-          -DCMAKE_C_COMPILER=clang \
-          -DCMAKE_CXX_COMPILER=clang++ \
-          -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
-          -DNEKO_BUILD_TESTS=ON \
-          -DNEKO_AUTO_FETCH_DEPS=ON
+        cmake -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DNEKO_BUILD_TESTS=ON -DNEKO_AUTO_FETCH_DEPS=ON
 
     - name: Run static analysis
       run: |
@@ -58,14 +52,7 @@ jobs:
 
     - name: Configure with AddressSanitizer
       run: |
-        cmake -B build \
-          -DCMAKE_BUILD_TYPE=Debug \
-          -DCMAKE_C_COMPILER=clang \
-          -DCMAKE_CXX_COMPILER=clang++ \
-          -DCMAKE_CXX_FLAGS="-fsanitize=address -g -O1" \
-          -DCMAKE_C_FLAGS="-fsanitize=address -g -O1" \
-          -DNEKO_BUILD_TESTS=ON \
-          -DNEKO_AUTO_FETCH_DEPS=ON
+        cmake -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_CXX_FLAGS="-fsanitize=address -g -O1" -DCMAKE_C_FLAGS="-fsanitize=address -g -O1" -DNEKO_BUILD_TESTS=ON -DNEKO_AUTO_FETCH_DEPS=ON
 
     - name: Build with sanitizer
       run: cmake --build build --parallel
@@ -93,14 +80,7 @@ jobs:
 
     - name: Configure with ThreadSanitizer
       run: |
-        cmake -B build \
-          -DCMAKE_BUILD_TYPE=Debug \
-          -DCMAKE_C_COMPILER=clang \
-          -DCMAKE_CXX_COMPILER=clang++ \
-          -DCMAKE_CXX_FLAGS="-fsanitize=thread -g -O1" \
-          -DCMAKE_C_FLAGS="-fsanitize=thread -g -O1" \
-          -DNEKO_BUILD_TESTS=ON \
-          -DNEKO_AUTO_FETCH_DEPS=ON
+        cmake -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_CXX_FLAGS="-fsanitize=thread -g -O1" -DCMAKE_C_FLAGS="-fsanitize=thread -g -O1" -DNEKO_BUILD_TESTS=ON -DNEKO_AUTO_FETCH_DEPS=ON
 
     - name: Build with sanitizer
       run: cmake --build build --parallel
@@ -128,14 +108,7 @@ jobs:
 
     - name: Configure with coverage
       run: |
-        cmake -B build \
-          -DCMAKE_BUILD_TYPE=Debug \
-          -DCMAKE_C_COMPILER=gcc \
-          -DCMAKE_CXX_COMPILER=g++ \
-          -DCMAKE_CXX_FLAGS="--coverage -g -O0" \
-          -DCMAKE_C_FLAGS="--coverage -g -O0" \
-          -DNEKO_BUILD_TESTS=ON \
-          -DNEKO_AUTO_FETCH_DEPS=ON
+        cmake -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -DCMAKE_CXX_FLAGS="--coverage -g -O0" -DCMAKE_C_FLAGS="--coverage -g -O0" -DNEKO_BUILD_TESTS=ON -DNEKO_AUTO_FETCH_DEPS=ON
 
     - name: Build
       run: cmake --build build --parallel
