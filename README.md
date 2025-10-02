@@ -8,23 +8,29 @@ A cross-platform C++20 system information library providing memory information, 
 
 ## Features
 
+- **Platform-consistent paths**: All paths use forward slashes `/` to avoid backslashes, ensuring cross-platform consistency
 - **Memory Information**: Get system memory statistics (total, free memory)
 - **Platform Detection**: Detect operating system (Windows, macOS, Linux) and architecture (x64, x86, ARM64, ARM)
 - **System Utilities**: Work with temporary directories, working paths, and home directories
 - **Cross-platform**: Supports Windows, macOS, and Linux
-- **Header-only Interface**: Easy integration with minimal setup
 - **Modern C++**: Built with C++20 features and best practices
 
 ## Quick Start
+
+Configure:
+[CMake](#cmake) | [Tests](#testing)
+
+Example:
+[Memory Info](#memory-information) | [Platform Detection](#platform-detection) | [System Utilities](#system-utilities)
 
 ### Prerequisites
 
 - C++20 compatible compiler
 - CMake 3.14 or higher
 
-### Integration
+## Integration
 
-#### Using CMake FetchContent (Recommended)
+### CMake
 
 ```cmake
 include(FetchContent)
@@ -35,18 +41,10 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(NekoSystem)
 
+# Add your target and link NekoSystem
+add_executable(your_target main.cpp)
+
 target_link_libraries(your_target PRIVATE Neko::System)
-```
-
-#### Manual Installation
-
-```bash
-git clone https://github.com/moehoshio/NekoSystem.git
-cd NekoSystem
-mkdir build && cd build
-cmake ..
-cmake --build .
-cmake --install .
 ```
 
 ## Usage Examples
@@ -176,141 +174,69 @@ std::string workPath(const std::string &setPath = "");
 std::optional<std::string> getHome();
 ```
 
-## Building and Testing
+## Testing
 
-### Build Options
+You can run the tests to verify that everything is working correctly.
 
-- `NEKO_AUTO_FETCH_DEPS`: Automatically fetch dependencies (default: ON)
-- `NEKO_BUILD_TESTS`: Build unit tests (default: ON)
+If you haven't configured the build yet, please run:
 
-### Building
-
-```bash
-# Clone with dependencies
-git clone --recursive https://github.com/moehoshio/NekoSystem.git
-cd NekoSystem
-
-# Configure
-mkdir build && cd build
-cmake .. -DNEKO_BUILD_TESTS=ON
-
-# Build
-cmake --build . --config Release
-
-# Run tests
-ctest --output-on-failure
+```shell
+cmake -B ./build . -DNEKO_BUILD_TESTS=ON -DNEKO_AUTO_FETCH_DEPS=ON
 ```
 
-### Running Tests
+Now, you can build the test files (you must build them manually at least once before running the tests!).
 
-The project includes comprehensive unit tests covering:
-
-- Memory information retrieval
-- Platform and architecture detection
-- System utility functions
-- Cross-component integration
-
-```bash
-# Run all tests
-ctest --output-on-failure
-
-# Run specific test executable
-./build/Debug/system_tests  # Windows
-./build/system_tests        # Unix-like systems
+```shell
+cmake --build ./build --config Debug
 ```
 
-## Dependencies
+Then, you can run the tests with the following commands:
 
-- **NekoSchema**: Type definitions and schema utilities
-- **NekoFunction**: Utility functions (path normalization, etc.)
-- **GoogleTest**: Testing framework (test builds only)
+Unix Makefile / Ninja generator：
 
-Dependencies are automatically fetched via CMake FetchContent when `NEKO_AUTO_FETCH_DEPS` is enabled.
-
-## Supported Platforms
-
-| Platform | Compiler | Status |
-|----------|----------|--------|
-| Windows 10/11 | MSVC 2019+ | ✅ Fully Supported |
-| Windows 10/11 | Clang 10+ | ✅ Fully Supported |
-| macOS 10.15+ | Clang 10+ | ✅ Fully Supported |
-| macOS 10.15+ | GCC 10+ | ✅ Fully Supported |
-| Ubuntu 20.04+ | GCC 10+ | ✅ Fully Supported |
-| Ubuntu 20.04+ | Clang 10+ | ✅ Fully Supported |
-
-## Project Structure
-
-```text
-NekoSystem/
-├── include/
-│   └── neko/
-│       └── system/
-│           ├── memoryinfo.hpp    # Memory information API
-│           └── platform.hpp      # Platform detection API
-├── src/
-│   └── neko/
-│       └── system/
-│           ├── memoryinfo_windows.cpp
-│           ├── memoryinfo_macos.cpp
-│           ├── memoryinfo_linux.cpp
-│           ├── platform_windows.cpp
-│           └── platform_unix.cpp
-├── tests/
-│   └── system_test.cpp          # Comprehensive unit tests
-├── CMakeLists.txt               # Build configuration
-└── README.md                    # This file
+```shell
+cmake --build ./build --target test
 ```
 
-## Contributing
+Visual Studio generator：
 
-We welcome contributions! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
+```shell
+cmake --build ./build --config Debug --target RUN_TESTS
+```
 
-### Development Setup
+If everything is set up correctly, you should see output similar to the following:
 
-1. Fork the repository
-2. Clone your fork: `git clone https://github.com/yourusername/NekoSystem.git`
-3. Create a feature branch: `git checkout -b feature/amazing-feature`
-4. Make your changes and add tests
-5. Run tests: `cmake --build build && ctest --test-dir build --output-on-failure`
-6. Commit your changes: `git commit -m 'Add some amazing feature'`
-7. Push to the branch: `git push origin feature/amazing-feature`
-8. Open a Pull Request
+```shell
+  Test project /path/to/NekoSystem/build
+        Start  1: MemoryInfoTest.GetSystemMemoryInfoReturn 
+  sValidResult
+   1/41 Test  #1: MemoryInfoTest.GetSystemMemoryInfoReturn
+  sValidResult ...   Passed    0.02 sec
 
-### Code Style
+#   ......
 
-- Follow the existing code style
-- Use C++20 features appropriately
-- Add tests for new functionality
-- Update documentation as needed
+        Start 41: NekoFunction_tests
+  41/41 Test #41: NekoFunction_tests .....................
+  ................   Passed    0.02 sec
+  
+  100% tests passed, 0 tests failed out of 41
+
+  Total Test time (real) =   0.81 sec
+```
+
+### Disable Tests
+
+If you want to disable building and running tests, you can set the following CMake option when configuring your project:
+
+```shell
+cmake -B ./build . -DNEKO_BUILD_TESTS=OFF
+```
+
+This will skip test targets during the build process.
 
 ## License
 
-This project is dual-licensed under either:
-
-- The MIT License (MIT), or
-- The Apache License, Version 2.0 (Apache-2.0)
-
-You may use this project under the terms of either license, at your option.
-
-See [LICENSE](LICENSE) for the full license texts.
-
-## Changelog
-
-### Version 1.0.0
-
-- Initial release
-- Memory information API
-- Platform detection API
-- System utilities API
-- Comprehensive test suite
-- Cross-platform support (Windows, macOS, Linux)
-
-## Acknowledgments
-
-- Built with modern C++20 features
-- Uses CMake for cross-platform building
-- Integrated with GoogleTest for reliable testing
-- Part of the Neko ecosystem of C++ libraries
+[License](LICENSE) MIT OR Apache-2.0
 
 ## See More
 

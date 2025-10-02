@@ -102,7 +102,7 @@ namespace neko::system {
         using namespace neko::ops::pipe;
 
         static std::string tempFolder = []() -> std::string {
-            return (std::filesystem::temp_directory_path().string() + "/Nekolc") | neko::util::lambda::unifiedPath;
+            return (std::filesystem::temp_directory_path().string() + "/Neko") | neko::util::lambda::unifiedPath;
         }();
 
         if (!setTempDir.empty() && std::filesystem::is_directory(setTempDir)) {
@@ -144,13 +144,13 @@ namespace neko::system {
      * - Automatically selects the environment variable by platform (Windows: USERPROFILE, others: HOME).
      */
     inline std::optional<std::string> getHome() {
-        neko::cstr path = std::getenv(
+        neko::cstr path = 
 #ifdef _WIN32
-            "USERPROFILE"
+        std::getenv_s("USERPROFILE");
 #else
-            "HOME"
+        std::getenv("HOME");
 #endif
-        );
+        
         if (path) {
             using namespace neko::ops::pipe;
             return std::string(path) | neko::util::lambda::unifiedPath;
