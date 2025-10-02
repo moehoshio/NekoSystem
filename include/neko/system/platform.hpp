@@ -146,7 +146,7 @@ namespace neko::system {
     inline std::optional<std::string> getHome() {
         neko::cstr path = 
 #ifdef _WIN32
-        std::getenv_s("USERPROFILE");
+        std::getenv("USERPROFILE");
 #else
         std::getenv("HOME");
 #endif
