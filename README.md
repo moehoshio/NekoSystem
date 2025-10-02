@@ -1,11 +1,10 @@
 # NekoSystem
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![C++20](https://img.shields.io/badge/C%2B%2B-20-blue.svg)](https://en.wikipedia.org/wiki/C%2B%2B20)
-[![CMake](https://img.shields.io/badge/CMake-3.14+-green.svg)](https://cmake.org/)
-
 A cross-platform C++20 system information library providing memory information, platform detection, and system utilities.
+
+[![License](https://img.shields.io/badge/License-MIT%20OR%20Apache--2.0-blue.svg)](LICENSE)
+![Require](https://img.shields.io/badge/%20Require%20-%3E=%20C++%2020-orange.svg)
+[![CMake](https://img.shields.io/badge/CMake-3.14+-green.svg)](https://cmake.org/)
 
 ## Features
 
@@ -20,7 +19,7 @@ A cross-platform C++20 system information library providing memory information, 
 
 ### Prerequisites
 
-- C++20 compatible compiler (GCC 10+, Clang 10+, MSVC 2019+)
+- C++20 compatible compiler
 - CMake 3.14 or higher
 
 ### Integration
@@ -313,6 +312,11 @@ See [LICENSE](LICENSE) for the full license texts.
 - Integrated with GoogleTest for reliable testing
 - Part of the Neko ecosystem of C++ libraries
 
----
+## See More
 
-For more information, visit the [project repository](https://github.com/moehoshio/NekoSystem).
+- [NekoLog](https://github.com/moehoshio/nlog): An easy-to-use, modern, lightweight, and efficient C++20 logging library.
+- [NekoEvent](https://github.com/moehoshio/NekoEvent): A modern easy to use type-safe and high-performance event handling system for C++.
+- [NekoSchema](https://github.com/moehoshio/NekoSchema): A lightweight, header-only C++20 schema library.
+- [NekoSystem](https://github.com/moehoshio/NekoSystem): A modern C++20 cross-platform system utility library.
+- [NekoFunction](https://github.com/moehoshio/NekoFunction): A comprehensive modern C++ utility library that provides practical functions for common programming tasks.
+- [NekoThreadPool](https://github.com/moehoshio/NekoThreadPool): An easy to use and efficient C++ 20 thread pool that supports priorities and submission to specific threads.

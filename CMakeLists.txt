@@ -19,9 +19,27 @@ if(NEKO_AUTO_FETCH_DEPS)
         GIT_REPOSITORY https://github.com/moehoshio/NekoFunction.git
         GIT_TAG        main
     )
-
     FetchContent_MakeAvailable(NekoFunction)
-endif()
+
+    if(NEKO_BUILD_TESTS)
+        find_package(GTest QUIET)
+
+        if(NOT GTest_FOUND)
+        # Fetch GoogleTest
+            include(FetchContent)
+            FetchContent_Declare(
+                googletest
+                GIT_REPOSITORY https://github.com/google/googletest.git
+                GIT_TAG        release-1.12.1
+            )
+            # For Windows: Prevent overriding the parent project's compiler/linker settings
+            set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+            FetchContent_MakeAvailable(googletest)
+        endif(NOT GTest_FOUND)
+
+    endif(NEKO_BUILD_TESTS)
+
+endif(NEKO_AUTO_FETCH_DEPS)
 
 set(SRCFILES)
 
@@ -54,51 +72,22 @@ target_include_directories(NekoSystem PUBLIC
 target_link_libraries(NekoSystem PUBLIC NekoSchema NekoFunction)
 target_compile_features(NekoSystem PUBLIC cxx_std_20)
 
-# Compiler-specific options to enable proper C++20 feature detection
-if(MSVC)
-    target_compile_options(NekoSystem PUBLIC /Zc:__cplusplus)
-elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-    # GCC needs explicit standard and feature test macro updates
-    target_compile_options(NekoSystem PUBLIC -std=c++20)
-elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-    # Clang needs explicit standard for proper feature detection
-    target_compile_options(NekoSystem PUBLIC -std=c++20)
-endif()
 
 # Testing
 if(NEKO_BUILD_TESTS)
+    if (NOT NEKO_AUTO_FETCH_DEPS AND NOT GTest_FOUND)
+        message(FATAL_ERROR "GTest is required for building tests. Please enable NEKO_AUTO_FETCH_DEPS or install GTest manually.")
+    endif()
+
     enable_testing()
-    
-    # Fetch GoogleTest
-    include(FetchContent)
-    FetchContent_Declare(
-        googletest
-        GIT_REPOSITORY https://github.com/google/googletest.git
-        GIT_TAG        release-1.12.1
-    )
-    # For Windows: Prevent overriding the parent project's compiler/linker settings
-    set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-    FetchContent_MakeAvailable(googletest)
-    
-    # System Test executable
     add_executable(system_tests tests/system_test.cpp)
     target_include_directories(system_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
     target_link_libraries(system_tests 
         PRIVATE 
         NekoSystem
-        gtest_main
-        gtest
+        GTest::gtest_main
     )
     target_compile_features(system_tests PRIVATE cxx_std_20)
-    
-    # Compiler-specific options for tests to enable proper C++20 feature detection
-    if(MSVC)
-        target_compile_options(system_tests PRIVATE /Zc:__cplusplus)
-    elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-        target_compile_options(system_tests PRIVATE -std=c++20)
-    elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-        target_compile_options(system_tests PRIVATE -std=c++20)
-    endif()
     
     # Add test to CTest
     include(GoogleTest)
