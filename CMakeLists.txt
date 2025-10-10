@@ -54,18 +54,18 @@ set(SRCFILES)
 
 if(WIN32)
     list(APPEND SRCFILES
-        ${CMAKE_SOURCE_DIR}/src/neko/system/memoryinfo_windows.cpp
-        ${CMAKE_SOURCE_DIR}/src/neko/system/platform_windows.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/neko/system/memoryinfo_windows.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/neko/system/platform_windows.cpp
     )
 elseif(APPLE)
     list(APPEND SRCFILES 
-        ${CMAKE_SOURCE_DIR}/src/neko/system/memoryinfo_macos.cpp
-        ${CMAKE_SOURCE_DIR}/src/neko/system/platform_unix.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/neko/system/memoryinfo_macos.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/neko/system/platform_unix.cpp
     )
 elseif(UNIX)
     list(APPEND SRCFILES 
-        ${CMAKE_SOURCE_DIR}/src/neko/system/memoryinfo_linux.cpp
-        ${CMAKE_SOURCE_DIR}/src/neko/system/platform_unix.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/neko/system/memoryinfo_linux.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/neko/system/platform_unix.cpp
     )
 endif()
 
