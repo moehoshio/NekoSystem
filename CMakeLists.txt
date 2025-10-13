@@ -1,22 +1,32 @@
 cmake_minimum_required(VERSION 3.14)
 project(NekoSystem VERSION 1.0 LANGUAGES CXX)
 
-option(NEKO_AUTO_FETCH_DEPS "Automatically fetch dependencies" ON)
-option(NEKO_BUILD_TESTS "Build tests" ON)
+# ================
+# === Config ====
+# ================
+
+# Neko Module common options
+option(NEKO_BUILD_TESTS "Neko Build tests" ON)
+option(NEKO_AUTO_FETCH_DEPS "Neko Automatically fetch dependencies" ON)
+
+# NekoSystem specific options
+option(NEKO_SYSTEM_BUILD_TESTS "Neko System Build tests" ON)
+option(NEKO_SYSTEM_AUTO_FETCH_DEPS "Neko System Automatically fetch dependencies" ON)
 
 # Print configuration summary
+message(STATUS "Start configuration Neko System...")
 message(STATUS "NekoSystem configuration summary:")
 message(STATUS "  - CMake version: ${CMAKE_VERSION}")
 message(STATUS "")
-message(STATUS "  - Neko Auto fetch deps: ${NEKO_AUTO_FETCH_DEPS}")
-message(STATUS "  - Neko Build tests: ${NEKO_BUILD_TESTS}")
+message(STATUS "  - Neko Auto fetch deps: ${NEKO_SYSTEM_AUTO_FETCH_DEPS} common: ${NEKO_AUTO_FETCH_DEPS}")
+message(STATUS "  - Neko Build tests: ${NEKO_SYSTEM_BUILD_TESTS} common: ${NEKO_BUILD_TESTS}")
 message(STATUS "")
 message(STATUS "Dependency summary:")
-message(STATUS "  - GoogleTest support: ${GTest_FOUND}")
+message(STATUS "  - No dependencies required")
 message(STATUS "")
 
 
-if(NEKO_AUTO_FETCH_DEPS)
+if(NEKO_SYSTEM_AUTO_FETCH_DEPS OR (NEKO_AUTO_FETCH_DEPS AND NEKO_SYSTEM_AUTO_FETCH_DEPS))
     include(FetchContent)
 
     FetchContent_Declare(
@@ -68,7 +78,10 @@ elseif(UNIX)
 endif()
 
 
-# Main library target
+# ================
+# = Main target =
+# ================
+
 add_library(NekoSystem STATIC ${SRCFILES})
 add_library(Neko::System ALIAS NekoSystem)
 
@@ -80,12 +93,15 @@ target_link_libraries(NekoSystem PUBLIC NekoSchema NekoFunction)
 target_compile_features(NekoSystem PUBLIC cxx_std_20)
 
 
-# Tests
-if(NEKO_BUILD_TESTS)
+# ================
+# ==== Tests =====
+# ================
+
+if(NEKO_SYSTEM_BUILD_TESTS OR (NEKO_BUILD_TESTS AND NEKO_SYSTEM_BUILD_TESTS))
     enable_testing()
     message(STATUS "NekoSystem tests enabled")
-    
-    if (NOT NEKO_AUTO_FETCH_DEPS)
+
+    if (NOT NEKO_SYSTEM_AUTO_FETCH_DEPS AND NEKO_AUTO_FETCH_DEPS)
         message(FATAL_ERROR "GTest is required for building tests. Please enable NEKO_AUTO_FETCH_DEPS")
     endif()
 
@@ -100,3 +116,5 @@ if(NEKO_BUILD_TESTS)
 else()
     message(STATUS "NekoSystem tests disabled (NEKO_BUILD_TESTS=OFF)")
 endif()
+
+message(STATUS "End Neko System")

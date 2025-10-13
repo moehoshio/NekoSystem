@@ -18,7 +18,7 @@ A cross-platform C++20 system information library providing memory information, 
 ## Quick Start
 
 Configure:
-[CMake](#cmake) | [Tests](#testing)
+[CMake](#cmake) | [Test](#test)
 
 Example:
 [Memory Info](#memory-information) | [Platform Detection](#platform-detection) | [System Utilities](#system-utilities)
@@ -174,14 +174,17 @@ std::string workPath(const std::string &setPath = "");
 std::optional<std::string> getHome();
 ```
 
-## Testing
+## Test
 
 You can run the tests to verify that everything is working correctly.
 
 If you haven't configured the build yet, please run:
 
 ```shell
-cmake -B ./build . -DNEKO_BUILD_TESTS=ON -DNEKO_AUTO_FETCH_DEPS=ON
+# Global options
+cmake -D NEKO_BUILD_TESTS=ON -D NEKO_AUTO_FETCH_DEPS=ON -B ./build -S .
+# or specify to Neko Function only
+cmake -D NEKO_SYSTEM_BUILD_TESTS=ON -D NEKO_SYSTEM_AUTO_FETCH_DEPS=ON -B ./build -S .
 ```
 
 Now, you can build the test files (you must build them manually at least once before running the tests!).
@@ -192,16 +195,8 @@ cmake --build ./build --config Debug
 
 Then, you can run the tests with the following commands:
 
-Unix Makefile / Ninja generator：
-
 ```shell
-cmake --build ./build --target test
-```
-
-Visual Studio generator：
-
-```shell
-cmake --build ./build --config Debug --target RUN_TESTS
+cd ./build && ctest --output-on-failure
 ```
 
 If everything is set up correctly, you should see output similar to the following:
@@ -229,10 +224,19 @@ If everything is set up correctly, you should see output similar to the followin
 If you want to disable building and running tests, you can set the following CMake option when configuring your project:
 
 ```shell
-cmake -B ./build . -DNEKO_BUILD_TESTS=OFF
+cmake -B ./build -DNEKO_SYSTEM_BUILD_TESTS=OFF -S .
 ```
 
+or
+
+```shell
+cmake -B ./build -DNEKO_BUILD_TESTS=OFF -S .
+```
+
+(Note: This will disable tests for all Neko modules!)
+
 This will skip test targets during the build process.
+
 
 ## License
 
@@ -240,6 +244,7 @@ This will skip test targets during the build process.
 
 ## See More
 
+- [NekoNet](https://github.com/moehoshio/NekoNet): A modern , easy-to-use C++20 networking library via libcurl.
 - [NekoLog](https://github.com/moehoshio/NekoLog): An easy-to-use, modern, lightweight, and efficient C++20 logging library.
 - [NekoEvent](https://github.com/moehoshio/NekoEvent): A modern easy to use type-safe and high-performance event handling system for C++.
 - [NekoSchema](https://github.com/moehoshio/NekoSchema): A lightweight, header-only C++20 schema library.
