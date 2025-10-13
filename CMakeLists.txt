@@ -52,7 +52,7 @@ if(NEKO_SYSTEM_AUTO_FETCH_DEPS)
         FetchContent_MakeAvailable(googletest)
     endif()
 
-endif(NEKO_AUTO_FETCH_DEPS)
+endif(NEKO_SYSTEM_AUTO_FETCH_DEPS)
 
 set(SRCFILES)
 
