@@ -1,3 +1,6 @@
+// Include header for non-module usage
+#if !defined(NEKO_SYSTEM_ENABLE_MODULE) || (NEKO_SYSTEM_ENABLE_MODULE == false)
+
 #include <neko/schema/types.hpp>
 #include <neko/system/memoryinfo.hpp>
 
@@ -5,6 +8,19 @@
 
 // unix specific includes
 #include <sys/sysinfo.h>
+
+#else
+
+module neko.system;
+
+import neko.schema;
+
+#include <optional>
+
+// unix specific includes
+#include <sys/sysinfo.h>
+
+#endif
 
 namespace neko::system {
     std::optional<MemoryInfo> getSystemMemoryInfo() {

@@ -5,11 +5,15 @@
 
 #pragma once
 
+// Include header for non-module usage
+#if !defined(NEKO_SYSTEM_ENABLE_MODULE) || (NEKO_SYSTEM_ENABLE_MODULE == false)
+
 #include <neko/schema/types.hpp>
 
 #include <optional>
 #include <string>
 #include <sstream>
+#endif
 
 namespace neko::system {
 

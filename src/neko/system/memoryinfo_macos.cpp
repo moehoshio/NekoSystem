@@ -1,12 +1,30 @@
+// Include header for non-module usage
+#if !defined(NEKO_SYSTEM_ENABLE_MODULE) || (NEKO_SYSTEM_ENABLE_MODULE == false)
+
 #include <neko/schema/types.hpp>
 #include <neko/system/memoryinfo.hpp>
+
+#include <optional>
 
 // MacOS specific includes
 #include <mach/mach.h>
 #include <sys/sysctl.h>
 #include <sys/types.h>
 
+#else
+
+module neko.system;
+
+import neko.schema;
+
 #include <optional>
+
+// MacOS specific includes
+#include <mach/mach.h>
+#include <sys/sysctl.h>
+#include <sys/types.h>
+
+#endif
 
 namespace neko::system {
     

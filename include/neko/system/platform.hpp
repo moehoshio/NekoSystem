@@ -6,8 +6,10 @@
  *
  * This file is defined under the neko::system namespace and contains the PlatformInfo and several platform utility functions.
  */
-
 #pragma once
+
+// Include header for non-module usage
+#if !defined(NEKO_SYSTEM_ENABLE_MODULE) || (NEKO_SYSTEM_ENABLE_MODULE == false)
 
 #include <neko/schema/types.hpp>
 
@@ -18,6 +20,7 @@
 #include <mutex>
 #include <optional>
 #include <string>
+#endif
 
 /**
  * @namespace neko::system
@@ -144,18 +147,24 @@ namespace neko::system {
      * - Automatically selects the environment variable by platform (Windows: USERPROFILE, others: HOME).
      */
     inline std::optional<std::string> getHome() {
-        neko::cstr path = 
 #ifdef _WIN32
-        std::getenv("USERPROFILE");
+        char* buf = nullptr;
+        size_t sz = 0;
+        if (_dupenv_s(&buf, &sz, "USERPROFILE") == 0 && buf != nullptr) {
+            std::string result(buf);
+            free(buf);
+            using namespace neko::ops::pipe;
+            return result | neko::util::lambda::unifiedPath;
+        }
+        return std::nullopt;
 #else
-        std::getenv("HOME");
-#endif
-        
+        neko::cstr path = std::getenv("HOME");
         if (path) {
             using namespace neko::ops::pipe;
             return std::string(path) | neko::util::lambda::unifiedPath;
         }
         return std::nullopt;
+#endif
     }
 
     /**
