@@ -5,6 +5,8 @@ A cross-platform C++20 system information library providing memory information, 
 [![License](https://img.shields.io/badge/License-MIT%20OR%20Apache--2.0-blue.svg)](LICENSE)
 ![Require](https://img.shields.io/badge/%20Require%20-%3E=%20C++%2020-orange.svg)
 [![CMake](https://img.shields.io/badge/CMake-3.14+-green.svg)](https://cmake.org/)
+![Module Support](https://img.shields.io/badge/Modules-C%2B%2B20-blueviolet.svg)
+[![CI Status](https://github.com/moehoshio/NekoSystem/actions/workflows/ci.yml/badge.svg)](https://github.com/moehoshio/NekoSystem/actions/workflows/ci.yml)
 
 ## Features
 
@@ -18,7 +20,7 @@ A cross-platform C++20 system information library providing memory information, 
 ## Quick Start
 
 Configure:
-[CMake](#cmake) | [Test](#test)
+[CMake](#cmake) | [Vcpkg](#vcpkg) | [Conan](#conan) | [Test](#test)
 
 Example:
 [Memory Info](#memory-information) | [Platform Detection](#platform-detection) | [System Utilities](#system-utilities)
@@ -45,6 +47,145 @@ FetchContent_MakeAvailable(NekoSystem)
 add_executable(your_target main.cpp)
 
 target_link_libraries(your_target PRIVATE Neko::System)
+```
+
+#### C++20 Module Support
+
+NekoSystem supports C++20 modules. To use NekoSystem as a module, ensure your compiler supports C++20 modules and configure your project accordingly.
+
+```cmake
+...
+# Add NekoSystem to your CMake project
+FetchContent_Declare(
+    NekoSystem
+    GIT_REPOSITORY https://github.com/moehoshio/NekoSystem.git
+    GIT_TAG        main
+)
+ 
+
+# Set Variables Before Building
+set(NEKO_SYSTEM_ENABLE_MODULE ON CACHE BOOL "Enable Module support" FORCE)
+FetchContent_MakeAvailable(NekoSystem)
+
+target_link_libraries(your_target PRIVATE Neko::System::Module)
+```
+
+Import the module in your C++ code:
+
+```cpp
+import neko.system;
+```
+
+### Vcpkg
+
+To install NekoSystem using vcpkg, run the following command:
+
+```bash
+vcpkg install neko-system
+```
+
+Or add it to your `vcpkg.json`:
+
+```json
+{
+  "dependencies": ["neko-system"]
+}
+```
+
+Then in your CMakeLists.txt:
+
+```cmake
+find_package(NekoSystem CONFIG REQUIRED)
+target_link_libraries(your_target PRIVATE Neko::System)
+```
+
+When configuring your project, specify the vcpkg toolchain file:
+
+```shell
+cmake -B build -DCMAKE_PREFIX_PATH=/path/to/vcpkg/installed/x64-windows
+cmake --build build --config Debug
+```
+
+Note: Installing via vcpkg does not support modules.
+
+### Conan
+
+To install NekoSystem using Conan, add the following to your `conanfile.txt`:
+
+```ini
+[requires]
+neko-system/[*]
+
+[generators]
+CMakeDeps
+CMakeToolchain
+```
+
+Or use it in your `conanfile.py`:
+
+```python
+from conan import ConanFile
+
+class YourProject(ConanFile):
+    requires = "neko-system/[*]"
+    generators = "CMakeDeps", "CMakeToolchain"
+```
+
+Then install and use:
+
+```shell
+conan install . --build=missing
+cmake -B build -DCMAKE_TOOLCHAIN_FILE=build/conan_toolchain.cmake
+cmake --build build
+```
+
+In your CMakeLists.txt:
+
+```cmake
+find_package(NekoSystem CONFIG REQUIRED)
+target_link_libraries(your_target PRIVATE Neko::System)
+```
+
+#### Conan with C++20 Module Support
+
+To enable C++20 module support with Conan, use the `enable_module` option:
+
+```shell
+conan install . --build=missing -o neko-system/[*]:enable_module=True
+```
+
+Or specify it in your `conanfile.txt`:
+
+```ini
+[requires]
+neko-system/[*]
+
+[options]
+neko-system/*:enable_module=True
+
+[generators]
+CMakeDeps
+CMakeToolchain
+```
+
+Or in your `conanfile.py`:
+
+```python
+from conan import ConanFile
+
+class YourProject(ConanFile):
+    requires = "neko-system/[*]"
+    generators = "CMakeDeps", "CMakeToolchain"
+    
+    def configure(self):
+        self.options["neko-system"].enable_module = True
+```
+
+Then link against the module target in your CMakeLists.txt:
+
+```cmake
+find_package(NekoSystem CONFIG REQUIRED)
+target_link_libraries(your_target PRIVATE Neko::System::Module)
 ```
 
 ## Usage Examples
@@ -181,13 +322,10 @@ You can run the tests to verify that everything is working correctly.
 If you haven't configured the build yet, please run:
 
 ```shell
-# Global options
-cmake -D NEKO_BUILD_TESTS=ON -D NEKO_AUTO_FETCH_DEPS=ON -B ./build -S .
-# or specify to Neko Function only
 cmake -D NEKO_SYSTEM_BUILD_TESTS=ON -D NEKO_SYSTEM_AUTO_FETCH_DEPS=ON -B ./build -S .
 ```
 
-Now, you can build the test files (you must build them manually at least once before running the tests!).
+Now, you can build the test files with:
 
 ```shell
 cmake --build ./build --config Debug
@@ -229,14 +367,14 @@ cmake -B ./build -DNEKO_SYSTEM_BUILD_TESTS=OFF -S .
 
 or
 
-```shell
-cmake -B ./build -DNEKO_BUILD_TESTS=OFF -S .
+```cmake
+...
+# Set Variables Before Building
+set(NEKO_SYSTEM_BUILD_TESTS OFF CACHE BOOL "Disable building tests" FORCE)
+FetchContent_MakeAvailable(NekoSystem)
 ```
 
-(Note: This will disable tests for all Neko modules!)
-
 This will skip test targets during the build process.
-
 
 ## License
 
