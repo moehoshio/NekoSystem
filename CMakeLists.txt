@@ -165,8 +165,18 @@ if(NEKO_SYSTEM_BUILD_TESTS)
     include(GoogleTest)
     gtest_discover_tests(NekoSystem_tests)
 
+    # Module test (if modules are enabled)
     if(NEKO_SYSTEM_ENABLE_MODULE)
-        
+        if (MSVC)
+            message(STATUS "NekoSystem module tests enabled (MSVC only)")
+
+            add_executable(system_module_test tests/system_module_test.cpp)
+            target_link_libraries(system_module_test PRIVATE Neko::Schema::Module Neko::Function::Module Neko::System::Module GTest::gtest GTest::gtest_main)
+            target_compile_features(system_module_test PRIVATE cxx_std_20)
+            gtest_discover_tests(system_module_test)
+        else()
+            message(STATUS "Skipping NekoSystem module tests on non-MSVC toolchains")
+        endif()
     endif()
     
 else()
