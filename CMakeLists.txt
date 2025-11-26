@@ -122,16 +122,13 @@ if(NEKO_SYSTEM_ENABLE_MODULE)
     add_library(NekoSystem_module)
     add_library(Neko::System::Module ALIAS NekoSystem_module)
     
-    set(NEKO_SYSTEM_MODULE_FILES
-        ${CMAKE_CURRENT_SOURCE_DIR}/include/neko/system/neko.system.cppm
-    )
-
-    list(APPEND NEKO_SYSTEM_MODULE_FILES ${NEKO_SYSTEM_SRCFILES})
-
+    # Only .cppm files go in CXX_MODULES
     target_sources(NekoSystem_module
         PUBLIC
             FILE_SET CXX_MODULES FILES
-                ${NEKO_SYSTEM_MODULE_FILES}
+                ${CMAKE_CURRENT_SOURCE_DIR}/include/neko/system/neko.system.cppm
+        PRIVATE
+            ${NEKO_SYSTEM_SRCFILES}
     )
     
     target_link_libraries(NekoSystem_module PUBLIC Neko::Schema::Module Neko::Function::Module)
@@ -182,5 +179,57 @@ if(NEKO_SYSTEM_BUILD_TESTS)
 else()
     message(STATUS "NekoSystem tests disabled (NEKO_SYSTEM_BUILD_TESTS=OFF)")
 endif()
+
+# ================
+# == Install =====
+# ================
+
+include(GNUInstallDirs)
+include(CMakePackageConfigHelpers)
+
+# Install headers
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    FILES_MATCHING 
+    PATTERN "*.hpp"
+    PATTERN "*.cppm"
+)
+
+# Install targets
+install(TARGETS NekoSystem
+    EXPORT NekoSystemTargets
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    FILE_SET CXX_MODULES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)
+
+# Install export targets
+install(EXPORT NekoSystemTargets
+    FILE NekoSystemTargets.cmake
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/NekoSystem
+)
+
+# Create and install Config file
+configure_package_config_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/NekoSystemConfig.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/NekoSystemConfig.cmake
+    INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/NekoSystem
+)
+
+# Create and install Version file
+write_basic_package_version_file(
+    ${CMAKE_CURRENT_BINARY_DIR}/NekoSystemConfigVersion.cmake
+    VERSION ${PROJECT_VERSION}
+    COMPATIBILITY SameMajorVersion
+    ARCH_INDEPENDENT
+)
+
+install(FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/NekoSystemConfig.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/NekoSystemConfigVersion.cmake
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/NekoSystem
+)
 
 message(STATUS "Neko System End of configuration")

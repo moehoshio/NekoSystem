@@ -4,12 +4,12 @@ from conan.tools.files import copy
 import os
 
 
-class NekoFunctionConan(ConanFile):
-    name = "neko-function"
-    version = "1.0.11"
+class NekoSystemConan(ConanFile):
+    name = "neko-system"
+    version = "1.0.0"
     license = "MIT OR Apache-2.0"
     author = "moehoshio"
-    url = "https://github.com/moehoshio/NekoFunction"
+    url = "https://github.com/moehoshio/NekoSystem"
     description = "A cross-platform C++20 system information library providing memory information, platform detection, and system utilities. "
     topics = ("cpp", "system", "information", "library", "cross-platform", "header-only", "module-support", "neko", "memory", "platform", "utilities")
     
