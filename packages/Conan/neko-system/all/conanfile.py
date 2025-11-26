@@ -6,7 +6,7 @@ import os
 
 class NekoSystemConan(ConanFile):
     name = "neko-system"
-    version = "1.0.0"
+    version = "1.0.1"
     license = "MIT OR Apache-2.0"
     author = "moehoshio"
     url = "https://github.com/moehoshio/NekoSystem"
@@ -77,3 +77,4 @@ class NekoSystemConan(ConanFile):
     
     def package_id(self):
         self.info.clear()
+
