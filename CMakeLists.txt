@@ -1,4 +1,25 @@
 cmake_minimum_required(VERSION 3.14)
+
+# Set policy for MSVC runtime library before project()
+if(POLICY CMP0091)
+    cmake_policy(SET CMP0091 NEW)
+endif()
+
+# Set MSVC runtime library based on vcpkg CRT linkage
+# This must be set before project() command
+if(MSVC)
+    if(DEFINED VCPKG_CRT_LINKAGE)
+        if(VCPKG_CRT_LINKAGE STREQUAL "static")
+            set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+        else()
+            set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
+        endif()
+    elseif(NOT DEFINED CMAKE_MSVC_RUNTIME_LIBRARY)
+        # Default to dynamic runtime when not using vcpkg
+        set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
+    endif()
+endif()
+
 project(NekoSystem VERSION 1.0.0 LANGUAGES CXX)
 
 # ================
@@ -106,6 +127,16 @@ target_include_directories(NekoSystem PUBLIC
 )
 target_link_libraries(NekoSystem PUBLIC NekoSchema NekoFunction)
 target_compile_features(NekoSystem PUBLIC cxx_std_20)
+
+# Set MSVC runtime library on the target
+if(MSVC)
+    if(CMAKE_MSVC_RUNTIME_LIBRARY)
+        set_target_properties(NekoSystem PROPERTIES
+            MSVC_RUNTIME_LIBRARY "${CMAKE_MSVC_RUNTIME_LIBRARY}"
+        )
+        message(STATUS "NekoSystem: Using MSVC runtime: ${CMAKE_MSVC_RUNTIME_LIBRARY}")
+    endif()
+endif()
 
 # ================
 # = C++20 Module =

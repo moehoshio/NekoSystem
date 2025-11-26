@@ -125,23 +125,16 @@ jobs:
         Write-Host "`nModified portfile content:"
         Get-Content $portfile | Select-Object -First 10
 
-    - name: Install dependencies via vcpkg (Unix)
+    - name: Install NekoSystem via vcpkg (Unix)
       if: runner.os != 'Windows'
       run: |
-        # Install dependencies first
-        ${{ github.workspace }}/vcpkg/vcpkg install minizip-ng:${{ matrix.triplet }} openssl:${{ matrix.triplet }}
-        
-        # Then install neko-system
         ${{ github.workspace }}/vcpkg/vcpkg install neko-system:${{ matrix.triplet }}
 
-    - name: Install dependencies via vcpkg (Windows)
+    - name: Install NekoSystem via vcpkg (Windows)
       if: runner.os == 'Windows'
       run: |
-        # Install dependencies first
-        .\vcpkg\vcpkg.exe install minizip-ng:${{ matrix.triplet }} openssl:${{ matrix.triplet }}
-        
-        # Then install neko-system
         .\vcpkg\vcpkg.exe install neko-system:${{ matrix.triplet }}
+        
     - name: Verify installation structure (Unix)
       if: runner.os != 'Windows'
       run: |

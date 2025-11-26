@@ -1,4 +1,4 @@
-name: Neko Function CI
+name: Neko System CI
 
 on:
   push:
@@ -14,7 +14,7 @@ jobs:
       fail-fast: false
       matrix:
         config:
-  # Windows builds
+          # Windows builds
           - {
               name: "Windows MSVC Module Debug",
               os: windows-latest,
@@ -205,7 +205,7 @@ jobs:
 
     - name: Configure CMake
       run: |
-        echo "=== Configuring NekoFunction (Ubuntu) ==="
+        echo "=== Configuring NekoSystem (Ubuntu) ==="
         echo "Compiler: ${{ matrix.config.cxx }}"
         echo "Module support: ${{ matrix.config.enable_module }}"
         if [[ "${{ matrix.config.generators }}" == *"Visual Studio"* ]]; then

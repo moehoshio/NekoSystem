@@ -11,7 +11,7 @@ class NekoSystemConan(ConanFile):
     author = "moehoshio"
     url = "https://github.com/moehoshio/NekoSystem"
     description = "A cross-platform C++20 system information library providing memory information, platform detection, and system utilities. "
-    topics = ("cpp", "system", "information", "library", "cross-platform", "header-only", "module-support", "neko", "memory", "platform", "utilities")
+    topics = ("cpp", "system", "information", "library", "cross-platform", "module-support", "neko", "memory", "platform", "utilities")
     
     settings = "os", "compiler", "build_type", "arch"
     options = {
@@ -22,8 +22,7 @@ class NekoSystemConan(ConanFile):
         "enable_module": False
     }
     
-    no_copy_source = True
-    package_type = "header-library"
+    package_type = "static-library"
 
     exports_sources = "CMakeLists.txt", "include/*", "src/*", "tests/*", "cmake/*", "LICENSE", "README.md"
     
