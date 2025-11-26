@@ -177,4 +177,20 @@ namespace neko::system::tests::module {
         EXPECT_TRUE(isValidArch);
     }
 
+    // ============= Note on Runtime Function Tests =============
+    //
+    // Tests for runtime functions like getSystemMemoryInfo(), getOsVersion(),
+    // workPath(), tempFolder(), and getHome() cannot be included due to MSVC
+    // module implementation limitations.
+    //
+    // These functions are defined in module implementation units (.cpp files)
+    // but fail to link properly when called from test code, resulting in LNK2019
+    // errors. This appears to be a bug in MSVC's C++20 module support.
+    //
+    // The functions work correctly when used in non-module code (tested in
+    // system_test.cpp) and when called from within the same module.
+    //
+    // Workaround: Full testing is provided via traditional header includes in
+    // system_test.cpp until MSVC's module support matures.
+
 } // namespace neko::system::tests::module

@@ -94,22 +94,18 @@ namespace neko::system {
      * @return std::string The current temporary directory path (normalized).
      *
      * @details
-     * - Uses neko::util::lambda::unifiedPath for path normalization.
      * - Automatically creates the directory if it does not exist.
-     * - Prefers ClientConfig setting if available, otherwise uses the system default temp directory.
      */
     inline std::string tempFolder(const std::string &setTempDir = "") {
         static std::mutex mtx;
         std::lock_guard<std::mutex> lock(mtx);
 
-        using namespace neko::ops::pipe;
-
         static std::string tempFolder = []() -> std::string {
-            return (std::filesystem::temp_directory_path().string() + "/Neko") | neko::util::lambda::unifiedPath;
+            return neko::util::string::convertToUnixPath(std::filesystem::temp_directory_path().string() + "/Neko");
         }();
 
         if (!setTempDir.empty() && std::filesystem::is_directory(setTempDir)) {
-            tempFolder = setTempDir | neko::util::lambda::unifiedPath;
+            tempFolder = neko::util::string::convertToUnixPath(setTempDir);
         }
 
         if (!std::filesystem::exists(tempFolder))
@@ -133,9 +129,7 @@ namespace neko::system {
         if (!setPath.empty() && std::filesystem::is_directory(setPath))
             std::filesystem::current_path(setPath);
 
-        using namespace neko::ops::pipe;
-
-        return std::filesystem::current_path().string() | neko::util::lambda::unifiedPath;
+        return neko::util::string::convertToUnixPath(std::filesystem::current_path().string());
     }
 
     /**
@@ -153,15 +147,13 @@ namespace neko::system {
         if (_dupenv_s(&buf, &sz, "USERPROFILE") == 0 && buf != nullptr) {
             std::string result(buf);
             free(buf);
-            using namespace neko::ops::pipe;
-            return result | neko::util::lambda::unifiedPath;
+            return neko::util::string::convertToUnixPath(result);
         }
         return std::nullopt;
 #else
         neko::cstr path = std::getenv("HOME");
         if (path) {
-            using namespace neko::ops::pipe;
-            return std::string(path) | neko::util::lambda::unifiedPath;
+            return neko::util::string::convertToUnixPath(std::string(path));
         }
         return std::nullopt;
 #endif
