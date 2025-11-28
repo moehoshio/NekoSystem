@@ -31,10 +31,11 @@ class NekoSystemConan(ConanFile):
     
     def generate(self):
         tc = CMakeToolchain(self)
-        tc.variables["NEKO_SYSTEM_BUILD_TESTS"] = False
-        tc.variables["NEKO_SYSTEM_ENABLE_MODULE"] = self.options.enable_module
         # Automatically fetch NekoSchema and NekoFunction until it is available in Conan
         tc.variables["NEKO_SYSTEM_AUTO_FETCH_DEPS"] = True
+        tc.variables["NEKO_SYSTEM_ENABLE_MODULE"] = self.options.enable_module
+        # Disable tests for dependencies
+        tc.variables["NEKO_SYSTEM_BUILD_TESTS"] = False
         tc.variables["NEKO_SCHEMA_BUILD_TESTS"] = False
         tc.variables["NEKO_FUNCTION_BUILD_TESTS"] = False
         tc.generate()
@@ -71,10 +72,9 @@ class NekoSystemConan(ConanFile):
         
         # Module support (if enabled)
         if self.options.enable_module:
-            self.cpp_info.components["NekoFunctionModule"].set_property("cmake_target_name", "Neko::Function::Module")
-            self.cpp_info.components["NekoFunctionModule"].includedirs = ["include"]
-            self.cpp_info.components["NekoFunctionModule"].requires = ["NekoFunction"]
+            self.cpp_info.components["NekoSystemModule"].set_property("cmake_target_name", "Neko::System::Module")
+            self.cpp_info.components["NekoSystemModule"].includedirs = ["include"]
+            self.cpp_info.components["NekoSystemModule"].requires = ["NekoSystem"]
     
     def package_id(self):
         self.info.clear()
-
