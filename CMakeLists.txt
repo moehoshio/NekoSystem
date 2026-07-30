@@ -20,7 +20,7 @@ if(MSVC)
     endif()
 endif()
 
-project(NekoSystem VERSION 1.0.0 LANGUAGES CXX)
+project(NekoSystem VERSION 1.0.1 LANGUAGES CXX)
 
 # ================
 # === Config ====
