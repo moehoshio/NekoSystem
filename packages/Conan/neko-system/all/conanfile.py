@@ -8,8 +8,8 @@ class NekoSystemConan(ConanFile):
     name = "neko-system"
     version = "1.0.1"
     license = "MIT OR Apache-2.0"
-    author = "moehoshio"
-    url = "https://github.com/moehoshio/NekoSystem"
+    author = "hoshimoe"
+    url = "https://github.com/hoshimoe/NekoSystem"
     description = "A cross-platform C++20 system information library providing memory information, platform detection, and system utilities. "
     topics = ("cpp", "system", "information", "library", "cross-platform", "module-support", "neko", "memory", "platform", "utilities")
     
