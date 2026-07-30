@@ -1,6 +1,6 @@
 {
   "packageName": "neko-system",
-  "repositoryUrl": "https://github.com/moehoshio/NekoSystem",
+  "repositoryUrl": "https://github.com/hoshimoe/NekoSystem",
   "packageManagers": [
     "vcpkg",
     "Conan"

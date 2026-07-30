@@ -1,6 +1,6 @@
 /**
  * @file platform.hpp
- * @author moehoshio
+ * @author hoshimoe
  * @date 2025/06/07
  * @brief Provides platform-related information and utility functions, including OS/architecture identification, temporary/work/home directory helpers.
  *

@@ -20,7 +20,7 @@ if(MSVC)
     endif()
 endif()
 
-project(NekoSystem VERSION 1.0.1 LANGUAGES CXX)
+project(NekoSystem VERSION 1.0.2 LANGUAGES CXX)
 
 # ================
 # === Config ====
@@ -59,7 +59,7 @@ if(NEKO_SYSTEM_AUTO_FETCH_DEPS)
         message(STATUS "NekoSchema not found; Neko System Fetching NekoSchema...")
         FetchContent_Declare(
             NekoSchema
-            GIT_REPOSITORY https://github.com/moehoshio/NekoSchema.git
+            GIT_REPOSITORY https://github.com/hoshimoe/NekoSchema.git
             GIT_TAG        main
         )
         set(NEKO_SCHEMA_ENABLE_MODULE ${NEKO_SYSTEM_ENABLE_MODULE} CACHE BOOL "" FORCE)
@@ -72,7 +72,7 @@ if(NEKO_SYSTEM_AUTO_FETCH_DEPS)
         message(STATUS "NekoFunction not found; Neko System Fetching NekoFunction...")
         FetchContent_Declare(
             NekoFunction
-            GIT_REPOSITORY https://github.com/moehoshio/NekoFunction.git
+            GIT_REPOSITORY https://github.com/hoshimoe/NekoFunction.git
             GIT_TAG        main
         )
         set(NEKO_FUNCTION_ENABLE_MODULE ${NEKO_SYSTEM_ENABLE_MODULE} CACHE BOOL "" FORCE)
