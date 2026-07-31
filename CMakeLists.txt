@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.14)
 
+project(NekoSystem VERSION 1.0.3 LANGUAGES CXX)
+
 # Set policy for MSVC runtime library before project()
 if(POLICY CMP0091)
     cmake_policy(SET CMP0091 NEW)
@@ -19,8 +21,6 @@ if(MSVC)
         set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
     endif()
 endif()
-
-project(NekoSystem VERSION 1.0.2 LANGUAGES CXX)
 
 # ================
 # === Config ====

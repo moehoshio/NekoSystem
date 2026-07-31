@@ -1,9 +1,5 @@
 ﻿sources:
-  "1.0.1":
-    url: "https://github.com/hoshimoe/NekoSystem/archive/refs/tags/v1.0.1.tar.gz"
-    sha256: "0ebd4ed60cad293a085e0085af94c07e47767bbcd9de4275c613b6381834e72d"
-
   "1.0.2":
     url: "https://github.com/hoshimoe/NekoSystem/archive/refs/tags/v1.0.2.tar.gz"
     # TODO(release): replace with the real sha256 of the v1.0.2 tarball
-    sha256: "REPLACE_AFTER_TAGGING"
+    sha256: "db7ef9e4b8975b2d54fadaa27c2abebad04317ec4b70afe54e35e83a396a066c"
